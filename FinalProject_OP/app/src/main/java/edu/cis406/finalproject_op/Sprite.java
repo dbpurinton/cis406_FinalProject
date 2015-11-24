@@ -14,15 +14,15 @@ import javax.microedition.khronos.opengles.GL11Ext;
  */
 public class Sprite {
     private float posx=10,posy=10;//position the image will be drawn to
-    private float width=96,height=128;//height/width to be drawn on the screen
-    private float spriteX=0,spriteY=1; // the x,y position of the image from sprite sheet
+    private float width=96,height=96;//height/width to be drawn on the screen
+    private float spriteX=0,spriteY=2; // the x,y position of the image from sprite sheet
 
 
     private SpriteSheet spriteSheet;
     public Sprite(SpriteSheet sp){
         this.spriteSheet=sp;
 
-       
+
     }
     public void Draw(GL10 gl) {
 
@@ -32,8 +32,8 @@ public class Sprite {
                          posx+width,posy+height,0.f};
 
 
-        float sx=(1.0f/spriteSheet.getTextureWidth())*spriteX;
-        float sy=(1.0f/spriteSheet.getTextureHeight())*spriteY;
+        float sx=(1.0f/spriteSheet.getTextureWidth())*spriteSheet.getSpriteWidth()*spriteX;
+        float sy=(1.0f/spriteSheet.getTextureHeight())*spriteSheet.getSpriteHeight()*spriteY;
         float sw=(1.0f/spriteSheet.getTextureWidth())*spriteSheet.getSpriteWidth();
         float sh=(1.0f/spriteSheet.getTextureHeight())*spriteSheet.getSpriteHeight();
         float textcords[]={
