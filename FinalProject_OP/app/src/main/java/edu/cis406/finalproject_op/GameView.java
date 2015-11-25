@@ -15,7 +15,7 @@ public class GameView extends GLSurfaceView implements GLSurfaceView.Renderer {
     private Map map;
     public GameView(Context context) {
         super(context);
-        setEGLContextClientVersion(3);
+        setEGLContextClientVersion(1);
         setRenderer(this);
 
     }

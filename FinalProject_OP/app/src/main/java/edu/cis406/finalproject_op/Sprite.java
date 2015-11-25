@@ -70,12 +70,12 @@ public class Sprite {
 
 
 
-        gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
-        gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
+       gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
+       gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
         gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, textVert);
-        gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertex);
+       gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertex);
 
-        gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, vertcords.length / 3);
+       gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, vertcords.length / 3);
 
         gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
         gl.glDisableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
