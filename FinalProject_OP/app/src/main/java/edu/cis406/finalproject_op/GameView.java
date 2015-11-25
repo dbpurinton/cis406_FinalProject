@@ -14,6 +14,9 @@ public class GameView extends GLSurfaceView implements GLSurfaceView.Renderer {
     private  Sprite sprite;
     private Map map;
     private Camera camera;
+    TextRenderer txt;
+    long startTime = System.nanoTime();
+    int frames = 0;
     public GameView(Context context) {
         super(context);
         setEGLContextClientVersion(1);
@@ -34,6 +37,7 @@ public class GameView extends GLSurfaceView implements GLSurfaceView.Renderer {
         //load shit here
        sprite = new Sprite(new SpriteSheet(this.getContext(),R.mipmap.bad1,4,3,gl));
         map = new Map(this.getContext(),new SpriteSheet(this.getContext(),R.mipmap.mapsheet,15,20,gl),R.raw.map1);
+        txt= new TextRenderer(this.getContext(),gl,"Hello world",10,10);
     }
 
     @Override
@@ -54,9 +58,15 @@ public class GameView extends GLSurfaceView implements GLSurfaceView.Renderer {
     public void onDrawFrame(GL10 gl) {
         GLES20.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
       //  gl.glLoadIdentity();
-
+        frames++;
+        if(System.nanoTime() - startTime >= 1000000000) {
+           txt.setText(String.valueOf(frames));
+            frames = 0;
+            startTime = System.nanoTime();
+        }
         map.Draw(gl,camera);
-        sprite.Draw(gl,camera);
+        sprite.Draw(gl, camera);
         camera.setX(camera.getX()+2);
+        txt.Draw(gl);
     }
 }

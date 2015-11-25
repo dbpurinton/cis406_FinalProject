@@ -31,22 +31,34 @@ public class SpriteSheet {
       loadTexture(resourceID,gl);
 
     }
+    public SpriteSheet (Context context,Bitmap bitmap,int rows, int cols, GL10 gl){
+        sheetRows=rows;
+        sheetCols=cols;
+        //this.gl=gl;
+        this.context=context;
+        loadGLTexture(gl,bitmap);
+
+    }
     public  int[] loadTexture(int resourceID, GL10 gl){
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inScaled=false;
 
         Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(),resourceID,options);
+        return loadGLTexture(gl,bitmap);
+    }
+    public int [] loadGLTexture(GL10 gl, Bitmap bitmap){
         textureids = new int[1];
         gl.glGenTextures(1, textureids, 0);
         gl.glBindTexture(GL10.GL_TEXTURE_2D, textureids[0]);
 
-       gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, GL10.GL_LINEAR);
+
+        gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, GL10.GL_LINEAR);
         gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER, GL10.GL_LINEAR);
 
         gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_S, GL10.GL_CLAMP_TO_EDGE);
         gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_T, GL10.GL_CLAMP_TO_EDGE);
-       // gl.glTexImage2D(GL10.GL_TEXTURE_2D,0,GL10.GL_RGBA,bitmap.getWidth(),bitmap.getHeight(),0,GL10.GL_RGBA,GL10.GL_,bitmap);
-       // gl.glTexParameterf(GL10.GL_TEXTURE_2D,GL);
+        // gl.glTexImage2D(GL10.GL_TEXTURE_2D,0,GL10.GL_RGBA,bitmap.getWidth(),bitmap.getHeight(),0,GL10.GL_RGBA,GL10.GL_,bitmap);
+        // gl.glTexParameterf(GL10.GL_TEXTURE_2D,GL);
         width=bitmap.getWidth();
         height=bitmap.getHeight();
         GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, bitmap, 0);
