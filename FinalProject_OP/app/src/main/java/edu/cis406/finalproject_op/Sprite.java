@@ -15,14 +15,24 @@ import javax.microedition.khronos.opengles.GL11Ext;
 public class Sprite {
     private float posx=10,posy=10;//position the image will be drawn to
     private float width=96,height=96;//height/width to be drawn on the screen
-    private float spriteX=0,spriteY=2; // the x,y position of the image from sprite sheet
+    private int spriteX=0,spriteY=2; // the x,y position of the image from sprite sheet
 
 
     private SpriteSheet spriteSheet;
     public Sprite(SpriteSheet sp){
         this.spriteSheet=sp;
-
-
+    }
+    public Sprite(SpriteSheet sp,float x,float y){
+        this.spriteSheet=sp;
+        this.posx=x;
+        this.posy=y;
+    }
+    public Sprite(SpriteSheet sp,float x,float y,float width,float height){
+        this.spriteSheet=sp;
+        this.posx=x;
+        this.posy=y;
+        this.width=width;
+        this.height=height;
     }
     public void Draw(GL10 gl) {
 
@@ -72,7 +82,7 @@ public class Sprite {
 
     }
 
-
+//getters and setters
     public float getX(){
         return posx;
     }
@@ -87,5 +97,23 @@ public class Sprite {
     }
     public void setY(int y){
         this.posy=y;
+    }
+    public void setWidth(float width){
+        this.width=width;
+    }
+    public void setHeight(float height){
+        this.height=height;
+    }
+    public int getSpriteX(){
+        return  spriteX;
+    }
+    public void setSpriteX(int x){
+        spriteX=x;
+    }
+    public int getSpriteY(){
+        return  spriteY;
+    }
+    public void setSpriteY(int y){
+        spriteY=y;
     }
 }

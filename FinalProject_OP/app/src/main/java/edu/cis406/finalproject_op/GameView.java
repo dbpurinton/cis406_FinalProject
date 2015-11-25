@@ -12,6 +12,7 @@ import javax.microedition.khronos.opengles.GL10;
  */
 public class GameView extends GLSurfaceView implements GLSurfaceView.Renderer {
     private  Sprite sprite;
+    private Map map;
     public GameView(Context context) {
         super(context);
         setEGLContextClientVersion(3);
@@ -32,8 +33,7 @@ public class GameView extends GLSurfaceView implements GLSurfaceView.Renderer {
         gl.glShadeModel(GL10.GL_SMOOTH);
         //load shit here
        sprite = new Sprite(new SpriteSheet(this.getContext(),R.mipmap.bad1,4,3,gl));
-
-
+        map = new Map(this.getContext(),R.raw.map1);
     }
 
     @Override
@@ -44,7 +44,9 @@ public class GameView extends GLSurfaceView implements GLSurfaceView.Renderer {
         gl.glEnable(GL10.GL_ALPHA_TEST);
         gl.glMatrixMode(GL10.GL_PROJECTION);
         gl.glLoadIdentity();
-      gl.glOrthof(0.f, width, height, -1.0f, 0.0f, 1.0f);
+        gl.glOrthof(0.f, width, height, -1.0f, 0.0f, 1.0f);
+
+
     }
 
     @Override
