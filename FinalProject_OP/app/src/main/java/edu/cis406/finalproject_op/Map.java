@@ -25,10 +25,13 @@ public class Map {
         loadMap(MapFile);
 
     }
-    public void Draw(GL10 gl){
+    public void Draw(GL10 gl, Camera camera){
         for(int i=0;i<blocks.size();i++){
             Block blk= blocks.get(i);
-            sp.drawSprite(gl,blk.x,blk.y,32,32,blk.imgx,blk.imgy);
+            if(blk.x+64>=camera.getX() && blk.x<=camera.getX()+camera.getWidth()
+                     && blk.y>= camera.getY() && blk.y<=camera.getY()+camera.getHeight()) {
+                sp.drawSprite(gl, blk.x-camera.getX(), blk.y-camera.getY(), 64, 64, blk.imgx, blk.imgy);
+            }
         }
 
     }
@@ -50,11 +53,11 @@ public class Map {
                         break;
                     }
                     if (line.substring(i, i+5).equalsIgnoreCase("posx=")) {
-                        blk.x =( Float.valueOf(getValue(i + 5, line))+600);
+                        blk.x =( Float.valueOf(getValue(i + 5, line)))*2;
                     //  Log.d("BLOCK X", String.valueOf(blk.x));
                   }
                     if (line.substring(i, i+5).equalsIgnoreCase("posy=")) {
-                        blk.y = (Float.valueOf(getValue(i + 5, line))+600);
+                        blk.y = (Float.valueOf(getValue(i + 5, line)))*2;
                   //      Log.d("BLOCK Y", String.valueOf(blk.y));
                     }
 

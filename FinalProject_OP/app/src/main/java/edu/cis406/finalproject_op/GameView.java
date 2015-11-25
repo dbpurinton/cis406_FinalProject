@@ -13,6 +13,7 @@ import javax.microedition.khronos.opengles.GL10;
 public class GameView extends GLSurfaceView implements GLSurfaceView.Renderer {
     private  Sprite sprite;
     private Map map;
+    private Camera camera;
     public GameView(Context context) {
         super(context);
         setEGLContextClientVersion(1);
@@ -44,6 +45,7 @@ public class GameView extends GLSurfaceView implements GLSurfaceView.Renderer {
         gl.glMatrixMode(GL10.GL_PROJECTION);
         gl.glLoadIdentity();
         gl.glOrthof(0.f, width, height, -1.0f, 0.0f, 1.0f);
+        camera= new Camera(0,0,width,height);
 
 
     }
@@ -52,7 +54,9 @@ public class GameView extends GLSurfaceView implements GLSurfaceView.Renderer {
     public void onDrawFrame(GL10 gl) {
         GLES20.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
       //  gl.glLoadIdentity();
-        map.Draw(gl);
-        sprite.Draw(gl);
+
+        map.Draw(gl,camera);
+        sprite.Draw(gl,camera);
+        camera.setX(camera.getX()+2);
     }
 }

@@ -53,12 +53,12 @@ public class SpriteSheet {
         bitmap.recycle();
         return textureids;
     }
-    public void drawSprite(GL10 gl,float x,float y,float width,float height, float imgx,float imgy){
+    public void drawSprite(GL10 gl,float x,float y,float renderWidth,float renderHeight, int  imgx,int imgy){
 
             float vertcords[]={x,y,0.f,
-                    x+width,y,0.f,
-                    x,y+height,0.f,
-                    x+width,y+height,0.f};
+                    x+renderWidth,y,0.f,
+                    x,y+renderHeight,0.f,
+                    x+renderWidth,y+renderHeight,0.f};
 
 
             float sx=(1.0f/getTextureWidth())*getSpriteWidth()*imgx;
