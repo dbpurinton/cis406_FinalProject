@@ -6,6 +6,10 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.opengl.GLUtils;
 
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.FloatBuffer;
+
 import javax.microedition.khronos.opengles.GL10;
 
 /**
@@ -49,7 +53,51 @@ public class SpriteSheet {
         bitmap.recycle();
         return textureids;
     }
-    public void draw(GL10 gl){
+    public void drawSprite(GL10 gl,float x,float y,float width,float height, float imgx,float imgy){
+
+            float vertcords[]={x,y,0.f,
+                    x+width,y,0.f,
+                    x,y+height,0.f,
+                    x+width,y+height,0.f};
+
+
+            float sx=(1.0f/getTextureWidth())*getSpriteWidth()*imgx;
+            float sy=(1.0f/getTextureHeight())*getSpriteHeight()*imgy;
+            float sw=(1.0f/getTextureWidth())*getSpriteWidth();
+            float sh=(1.0f/getTextureHeight())*getSpriteHeight();
+            float textcords[]={
+                    sx,sy,
+                    sx+sw,sy,
+                    sx,sy+sh,
+                    sx+sw,sy+sh};
+
+            ByteBuffer buf = ByteBuffer.allocateDirect(vertcords.length * 4);
+            buf.order(ByteOrder.nativeOrder());
+            FloatBuffer vertex  = buf.asFloatBuffer();
+            vertex.put(vertcords);
+            vertex.position(0);
+
+            ByteBuffer   buff = ByteBuffer.allocateDirect(textcords.length * 4);
+            buff.order(ByteOrder.nativeOrder());
+            FloatBuffer textVert  = buff.asFloatBuffer();
+            textVert .put(textcords);
+            textVert .position(0);
+
+            int txtid=getTextureIDs();
+            gl.glEnable(GL10.GL_TEXTURE_2D);
+            gl.glBindTexture(GL10.GL_TEXTURE_2D, txtid);
+
+
+
+            gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
+            gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
+            gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, textVert);
+            gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertex);
+
+            gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, vertcords.length / 3);
+
+            gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
+            gl.glDisableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
 
     }
     public int getTextureIDs(){

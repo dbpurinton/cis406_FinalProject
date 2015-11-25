@@ -17,8 +17,7 @@ public class GameView extends GLSurfaceView implements GLSurfaceView.Renderer {
         super(context);
         setEGLContextClientVersion(1);
         setRenderer(this);
-
-    }
+}
 
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
@@ -33,7 +32,7 @@ public class GameView extends GLSurfaceView implements GLSurfaceView.Renderer {
         gl.glShadeModel(GL10.GL_SMOOTH);
         //load shit here
        sprite = new Sprite(new SpriteSheet(this.getContext(),R.mipmap.bad1,4,3,gl));
-        map = new Map(this.getContext(),R.raw.map1);
+        map = new Map(this.getContext(),new SpriteSheet(this.getContext(),R.mipmap.mapsheet,15,20,gl),R.raw.map1);
     }
 
     @Override
@@ -53,6 +52,7 @@ public class GameView extends GLSurfaceView implements GLSurfaceView.Renderer {
     public void onDrawFrame(GL10 gl) {
         GLES20.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
       //  gl.glLoadIdentity();
+        map.Draw(gl);
         sprite.Draw(gl);
     }
 }

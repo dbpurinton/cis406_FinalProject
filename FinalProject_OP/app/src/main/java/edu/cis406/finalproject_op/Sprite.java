@@ -35,7 +35,8 @@ public class Sprite {
         this.height=height;
     }
     public void Draw(GL10 gl) {
-
+        spriteSheet.drawSprite(gl,posx,posy,width,height,spriteX,spriteY);
+/*
       float vertcords[]={posx,posy,0.f,
                          posx+width,posy,0.f,
                          posx,posy+height,0.f,
@@ -78,7 +79,7 @@ public class Sprite {
        gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, vertcords.length / 3);
 
         gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
-        gl.glDisableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
+        gl.glDisableClientState(GL10.GL_TEXTURE_COORD_ARRAY);*/
 
     }
 
