@@ -3,6 +3,8 @@ package edu.cis406.finalproject_op;
 import android.content.Context;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
+import android.util.Log;
+import android.view.MotionEvent;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -11,7 +13,7 @@ import javax.microedition.khronos.opengles.GL10;
  * Created by geforce on 11/24/2015.
  */
 public class GameView extends GLSurfaceView implements GLSurfaceView.Renderer {
-    private  Sprite sprite;
+    private  Entity sprite;
     private Map map;
     private Camera camera;
     private int Score=0;
@@ -37,8 +39,9 @@ public class GameView extends GLSurfaceView implements GLSurfaceView.Renderer {
         gl.glClearDepthf(1.f);
         gl.glShadeModel(GL10.GL_SMOOTH);
         //load shit here
-       sprite = new Sprite(new SpriteSheet(this.getContext(),R.mipmap.bad1,4,3,gl));
-        map = new Map(this.getContext(),new SpriteSheet(this.getContext(),R.mipmap.sp2,12,10,gl),R.raw.map2);
+
+        map = new Map(this.getContext(),new SpriteSheet(this.getContext(),R.mipmap.sp3,12,10,gl),R.raw.map2);
+        sprite = new Entity(new SpriteSheet(this.getContext(),R.mipmap.bad1,4,3,gl),this,map.getStartX()+3000,map.getMaxY()-512);
         txt= new TextRenderer(this.getContext(),gl,"1",10,10);
     }
 
@@ -52,8 +55,9 @@ public class GameView extends GLSurfaceView implements GLSurfaceView.Renderer {
         gl.glLoadIdentity();
         gl.glOrthof(0.f, width, height, -1.0f, 0.0f, 1.0f);
         camera= new Camera(0,map.getMaxY()-height,width,height);
-        sprite.setY(map.getMaxY()-128);
-
+        sprite.setY(map.getMaxY()-256);
+        sprite.setX(map.getStartX() + 1600);
+        camera.setX(map.getStartX()+1600);
 
     }
 
@@ -67,9 +71,18 @@ public class GameView extends GLSurfaceView implements GLSurfaceView.Renderer {
             frames = 0;
             startTime = System.nanoTime();
         }
-        map.Draw(gl,camera);
+        map.Draw(gl, camera);
         sprite.Draw(gl, camera);
         camera.setX(camera.getX()+2);
         txt.Draw(gl);
+    }
+    @Override
+    public boolean onTouchEvent(MotionEvent e) {
+        Log.d("TOUCH EVENT","SCREEN PREES");
+        sprite.setY(sprite.getY()-100);
+        return true;
+    }
+    public Map getMap(){
+        return map;
     }
 }

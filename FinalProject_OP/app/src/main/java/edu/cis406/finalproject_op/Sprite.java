@@ -35,7 +35,7 @@ public class Sprite {
         this.height=height;
     }
     public void Draw(GL10 gl,Camera cam) {
-       posx+=2;
+
 
         spriteSheet.drawSprite(gl,posx-cam.getX(),posy-cam.getY(),width,height,spriteX,spriteY);
 /*

@@ -20,6 +20,7 @@ public class Map {
     private Context context;
     private ArrayList<Block> blocks;
     private float maxY=0;
+    private float startX=10000.f;
     public Map(Context context,SpriteSheet sp,int  MapFile){
         this.context=context;
         this.sp=sp;
@@ -56,6 +57,7 @@ public class Map {
                     if (line.substring(i, i+5).equalsIgnoreCase("posx=")) {
                         blk.x =( Float.valueOf(getValue(i + 5, line)))*2;
                     //  Log.d("BLOCK X", String.valueOf(blk.x));
+
                   }
                     if (line.substring(i, i+5).equalsIgnoreCase("posy=")) {
                         blk.y = (Float.valueOf(getValue(i + 5, line)))*2;
@@ -72,20 +74,28 @@ public class Map {
                         blk.imgy = Integer.valueOf(getValue(i + 5, line))/32;
 
                     }
-                //    if (i+9>=line.length()-1 && line.substring(i, i+8).equalsIgnoreCase("blocked=")) {
-                     //   if(getValue(i+8,line).equalsIgnoreCase("true")){
-                       //     blk.blocked=true;
-                       // }else{
-                         //   blk.blocked=false;
-                       // }
-                //    }
-                }
+                   if (i+8<=line.length()-1) {
+                       if (line.substring(i, i + 8).equalsIgnoreCase("blocked=")) {
+                             if(getValue(i+8,line).equalsIgnoreCase("true")){
+                                blk.blocked=true;
+                                 if(blk.x<startX){
+                                     startX=blk.x;
+                                 }
+
+                            }else{
+                              blk.blocked=false;
+                            }
+
+                       }
+                   }
+                   }
                 blocks.add(blk);
                 line =br.readLine();
             }
         }catch (Exception e){
             Log.d("Map", "Error loading map file");
         }
+        Log.d("STARTX",String.valueOf(startX));
     }
 
     private String getValue(int pos, String line){
@@ -97,6 +107,12 @@ public class Map {
     }
     public float getMaxY(){
         return maxY;
+    }
+    public float getStartX(){
+        return startX;
+    }
+    public ArrayList<Block> getBlocks(){
+        return blocks;
     }
 }
 class Block{
