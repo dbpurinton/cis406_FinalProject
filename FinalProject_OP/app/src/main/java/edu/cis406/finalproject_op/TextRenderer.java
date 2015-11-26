@@ -30,16 +30,16 @@ public class TextRenderer {
         bitmap.eraseColor(0);
 
         Paint textPaint = new Paint();
-        textPaint.setTextSize(64);
+        textPaint.setTextSize(32);
         textPaint.setAntiAlias(true);
         textPaint.setARGB(0xff, 0xff, 0xff, 0xff);
 
-        canvas.drawText(text, 16,112, textPaint);
+        canvas.drawText(text, 0,112, textPaint);
         sp=new SpriteSheet(context,bitmap,1,1,gl);
 
     }
     public void Draw(GL10 gl){
-        sp.drawSprite(gl,100,100,256,256,0,0);
+        sp.drawSprite(gl,0,0,256,256,0,0);
     }
     public void setText(String text){
         this.text=text;

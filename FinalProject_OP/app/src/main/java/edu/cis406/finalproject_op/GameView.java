@@ -14,7 +14,9 @@ public class GameView extends GLSurfaceView implements GLSurfaceView.Renderer {
     private  Sprite sprite;
     private Map map;
     private Camera camera;
+    private int Score=0;
     TextRenderer txt;
+    TextRenderer textScore;
     long startTime = System.nanoTime();
     int frames = 0;
     public GameView(Context context) {
@@ -25,7 +27,7 @@ public class GameView extends GLSurfaceView implements GLSurfaceView.Renderer {
 
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-        GLES20.glClearColor(0.f, 0.f, 0.f, 1.f);
+        GLES20.glClearColor(0.1f, 0.1f, 0.2f, 1.f);
         gl.glEnable(GL10.GL_TEXTURE_2D);
         gl.glEnable(GL10.GL_ALPHA_TEST);
         gl.glAlphaFunc(GL10.GL_GREATER, 0.01f);
@@ -37,7 +39,7 @@ public class GameView extends GLSurfaceView implements GLSurfaceView.Renderer {
         //load shit here
        sprite = new Sprite(new SpriteSheet(this.getContext(),R.mipmap.bad1,4,3,gl));
         map = new Map(this.getContext(),new SpriteSheet(this.getContext(),R.mipmap.sp2,12,10,gl),R.raw.map2);
-        txt= new TextRenderer(this.getContext(),gl,"Hello world",10,10);
+        txt= new TextRenderer(this.getContext(),gl,"1",10,10);
     }
 
     @Override
@@ -61,7 +63,7 @@ public class GameView extends GLSurfaceView implements GLSurfaceView.Renderer {
       //  gl.glLoadIdentity();
         frames++;
         if(System.nanoTime() - startTime >= 1000000000) {
-           txt.setText(String.valueOf(frames));
+           txt.setText("FPS:"+String.valueOf(frames));
             frames = 0;
             startTime = System.nanoTime();
         }
