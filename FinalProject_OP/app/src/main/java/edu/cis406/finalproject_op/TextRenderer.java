@@ -32,7 +32,7 @@ public class TextRenderer {
         Paint textPaint = new Paint();
         textPaint.setTextSize(64);
         textPaint.setAntiAlias(true);
-        textPaint.setARGB(0xff, 0x00, 0x00, 0x00);
+        textPaint.setARGB(0xff, 0xff, 0xff, 0xff);
 
         canvas.drawText(text, 16,112, textPaint);
         sp=new SpriteSheet(context,bitmap,1,1,gl);

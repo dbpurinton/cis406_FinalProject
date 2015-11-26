@@ -36,7 +36,7 @@ public class GameView extends GLSurfaceView implements GLSurfaceView.Renderer {
         gl.glShadeModel(GL10.GL_SMOOTH);
         //load shit here
        sprite = new Sprite(new SpriteSheet(this.getContext(),R.mipmap.bad1,4,3,gl));
-        map = new Map(this.getContext(),new SpriteSheet(this.getContext(),R.mipmap.mapsheet,15,20,gl),R.raw.map1);
+        map = new Map(this.getContext(),new SpriteSheet(this.getContext(),R.mipmap.sp2,12,10,gl),R.raw.map2);
         txt= new TextRenderer(this.getContext(),gl,"Hello world",10,10);
     }
 
@@ -49,7 +49,8 @@ public class GameView extends GLSurfaceView implements GLSurfaceView.Renderer {
         gl.glMatrixMode(GL10.GL_PROJECTION);
         gl.glLoadIdentity();
         gl.glOrthof(0.f, width, height, -1.0f, 0.0f, 1.0f);
-        camera= new Camera(0,0,width,height);
+        camera= new Camera(0,map.getMaxY()-height,width,height);
+        sprite.setY(map.getMaxY()-128);
 
 
     }
