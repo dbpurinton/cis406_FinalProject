@@ -16,15 +16,24 @@ public class GameView extends GLSurfaceView implements GLSurfaceView.Renderer {
     private  Entity sprite;
     private Map map;
     private Camera camera;
-    private int Score=0;
+    private int Score;
+    private int jumpcount;
+    private float jumptoheight;
+    private boolean topReached;
     TextRenderer txt;
     TextRenderer textScore;
     long startTime = System.nanoTime();
-    int frames = 0;
+    long spriteTime = System.nanoTime();
+    int frames;
     public GameView(Context context) {
         super(context);
         setEGLContextClientVersion(1);
         setRenderer(this);
+        Score = 0;
+        topReached = false;
+        jumptoheight = 0;
+        jumpcount = 2; // start game with player NOT already jumping.
+        frames = 0;
 }
 
     @Override
@@ -55,34 +64,101 @@ public class GameView extends GLSurfaceView implements GLSurfaceView.Renderer {
         gl.glLoadIdentity();
         gl.glOrthof(0.f, width, height, -1.0f, 0.0f, 1.0f);
         camera= new Camera(0,map.getMaxY()-height,width,height);
-        sprite.setY(map.getMaxY()-256);
-        sprite.setX(map.getStartX() + 1600);
-        camera.setX(map.getStartX()+1600);
+        sprite.setY(map.getMaxY() - 275);
+        sprite.setX(map.getStartX() + 1675);
+        camera.setX(map.getStartX() + 1550); // 1600 Location on the X plane that character starts.
 
     }
 
+    //Implementation of the Renderer interface. Effectively the Renderer's onDrawFrame() method
+    // can be considered analogous to a regular Thread's run() method.
     @Override
     public void onDrawFrame(GL10 gl) {
         GLES20.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
       //  gl.glLoadIdentity();
         frames++;
+
+        if(System.nanoTime() - spriteTime >= 110000000) // 1000000000
+        {
+
+            switch (sprite.getSpriteX())
+            {
+                case 0: sprite.setSpriteX(1);
+                    break;
+                case 1: sprite.setSpriteX(2);
+                    break;
+                case 2: sprite.setSpriteX(0);
+                    break;
+                default: sprite.setSpriteX(0);
+                    break;
+            }
+            spriteTime = System.nanoTime();
+        }
+
         if(System.nanoTime() - startTime >= 1000000000) {
-           txt.setText("FPS:"+String.valueOf(frames));
+            txt.setText("FPS:"+String.valueOf(frames));
             frames = 0;
             startTime = System.nanoTime();
         }
         map.Draw(gl, camera);
         sprite.Draw(gl, camera);
-        camera.setX(camera.getX()+2);
+        camera.setX(camera.getX() + 5);
         txt.Draw(gl);
     }
     @Override
     public boolean onTouchEvent(MotionEvent e) {
-        Log.d("TOUCH EVENT","SCREEN PREES");
-        sprite.setY(sprite.getY()-100);
+        //Log.d("TOUCH EVENT", "SCREEN PREES");
+        switch(e.getAction())
+        {
+            case MotionEvent.ACTION_DOWN:
+                if (jumpcount < 2)
+                {
+                    jumptoheight = sprite.getY() - 165.0f;
+                    topReached = false;
+                    jumpcount++;
+                    //sprite.setY(sprite.getY() - 275.0f);
+                }
+                break;
+            case MotionEvent.ACTION_MOVE:
+                //** CODE **
+                break;
+            case MotionEvent.ACTION_UP:
+                //** CODE **
+                break;
+        }
         return true;
     }
     public Map getMap(){
         return map;
+    }
+
+    public void resetJumpCount()
+    {
+        jumpcount = 0;
+    }
+
+    public int getJumpCount()
+    {
+        return jumpcount;
+    }
+
+    public float getJumpHeight()
+    {
+        return jumptoheight;
+    }
+
+    public boolean getTopReached()
+    {
+        return topReached;
+    }
+
+    public void setTopReached(boolean setTop)
+    {
+        topReached = setTop;
+    }
+
+    public void setJumpHeight(float jumph)
+    {
+        jumptoheight = jumph;
     }
 }
