@@ -21,6 +21,7 @@ public class Map {
     private ArrayList<Block> blocks;
     private float maxY=0;
     private float startX=10000.f;
+    private  float finishX=0;
     public Map(Context context,SpriteSheet sp,int  MapFile){
         this.context=context;
         this.sp=sp;
@@ -57,6 +58,12 @@ public class Map {
                     if (line.substring(i, i+5).equalsIgnoreCase("posx=")) {
                         blk.x =( Float.valueOf(getValue(i + 5, line)))*2;
                     //  Log.d("BLOCK X", String.valueOf(blk.x));
+                        if(blk.x<startX){
+                            startX=blk.x;
+                        }
+                        if(blk.x>finishX){
+                            finishX=blk.x;
+                        }
 
                   }
                     if (line.substring(i, i+5).equalsIgnoreCase("posy=")) {
@@ -78,9 +85,7 @@ public class Map {
                        if (line.substring(i, i + 8).equalsIgnoreCase("blocked=")) {
                              if(getValue(i+8,line).equalsIgnoreCase("true")){
                                 blk.blocked=true;
-                                 if(blk.x<startX){
-                                     startX=blk.x;
-                                 }
+
 
                             }else{
                               blk.blocked=false;
@@ -114,6 +119,10 @@ public class Map {
     public ArrayList<Block> getBlocks(){
         return blocks;
     }
+    public float getFinishX(){
+        return finishX;
+    }
+
 }
 class Block{
     public float x;
