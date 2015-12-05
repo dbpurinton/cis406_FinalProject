@@ -20,10 +20,17 @@ public class GameView extends GLSurfaceView implements GLSurfaceView.Renderer {
     private int jumpcount;
     private float jumptoheight;
     private boolean topReached;
+    private int movementSpeed;
+    private int jumpSpeed;
+    private double moveDistance;
+    private double jumpDistance;
+    private long passedTime;
     TextRenderer txt;
     TextRenderer textScore;
+    long currentTime = System.currentTimeMillis();
     long startTime = System.nanoTime();
     long spriteTime = System.nanoTime();
+    long gameTime = System.currentTimeMillis();
     int frames;
     public GameView(Context context) {
         super(context);
@@ -34,6 +41,13 @@ public class GameView extends GLSurfaceView implements GLSurfaceView.Renderer {
         jumptoheight = 0;
         jumpcount = 2; // start game with player NOT already jumping.
         frames = 0;
+        movementSpeed = 175;
+        jumpSpeed = 250;
+        // Start the character NOT moving because time has not yet
+        // been used to calculate speed (yet).
+        moveDistance = ((System.currentTimeMillis() - gameTime) / 1000.0) * movementSpeed;
+        jumpDistance = ((System.currentTimeMillis() - gameTime) / 1000.0) * jumpSpeed;
+        passedTime = 0;
 }
 
     @Override
@@ -64,7 +78,7 @@ public class GameView extends GLSurfaceView implements GLSurfaceView.Renderer {
         gl.glLoadIdentity();
         gl.glOrthof(0.f, width, height, -1.0f, 0.0f, 1.0f);
         camera= new Camera(0,map.getMaxY()-height,width,height);
-        sprite.setY(map.getMaxY() - 275);
+        sprite.setY(map.getMaxY() - 300);
         sprite.setX(map.getStartX() + 1675);
         camera.setX(map.getStartX() + 1550); // 1600 Location on the X plane that character starts.
 
@@ -80,7 +94,12 @@ public class GameView extends GLSurfaceView implements GLSurfaceView.Renderer {
 
         if(System.nanoTime() - spriteTime >= 110000000) // 1000000000
         {
-
+           if (sprite.checkCollisionFalling())
+           {
+               sprite.setSpriteX(1);
+           }
+            else
+           {
             switch (sprite.getSpriteX())
             {
                 case 0: sprite.setSpriteX(1);
@@ -92,6 +111,7 @@ public class GameView extends GLSurfaceView implements GLSurfaceView.Renderer {
                 default: sprite.setSpriteX(0);
                     break;
             }
+           }
             spriteTime = System.nanoTime();
         }
 
@@ -102,7 +122,17 @@ public class GameView extends GLSurfaceView implements GLSurfaceView.Renderer {
         }
         map.Draw(gl, camera);
         sprite.Draw(gl, camera);
-        camera.setX(camera.getX() + 5);
+
+        currentTime = System.currentTimeMillis();
+        passedTime = currentTime - gameTime;
+        moveDistance = (passedTime / 1000.0) * movementSpeed;
+        jumpDistance = (passedTime / 1000.0) * jumpSpeed;
+        if(jumpDistance > 30){jumpDistance = 30;} // the bigger distance is, the more it lags.
+        if(moveDistance > 15){moveDistance = 15;}
+        camera.setX(camera.getX() + (int) moveDistance);
+        gameTime = System.currentTimeMillis();
+        //Log.d("Jump Distance: ", Double.toString(jumpDistance));
+
         txt.Draw(gl);
     }
     @Override
@@ -160,5 +190,17 @@ public class GameView extends GLSurfaceView implements GLSurfaceView.Renderer {
     public void setJumpHeight(float jumph)
     {
         jumptoheight = jumph;
+    }
+
+    public long getGameTime() { return gameTime;}
+
+    public int getCameraXPos()
+    {
+        return (int)moveDistance;
+    }
+
+    public int getJumpYPos()
+    {
+        return (int)jumpDistance;
     }
 }

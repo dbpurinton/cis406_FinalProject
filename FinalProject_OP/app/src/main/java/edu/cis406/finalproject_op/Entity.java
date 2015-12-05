@@ -33,20 +33,23 @@ public class Entity extends Sprite {
     }
     public void Update()
     {
-        super.setX(super.getX() + 5); // rate of moving forward.
+        //Log.d("Jump Y Pos: ", Integer.toString(gv.getJumpYPos()));
+        //super.setX(super.getX() + 5); // rate of moving forward.
+        super.setX(super.getX() + gv.getCameraXPos()); // player is actually moving based directly on camera.
+
         if(checkCollisionFalling()) // if in the air...
         {
-            super.setY(super.getY() + 8); // rate of falling.
+            super.setY(super.getY() + gv.getJumpYPos()); // rate of falling.
         }
-            if (super.getY() > gv.getJumpHeight() && gv.getJumpCount() < 2)
-            {
-                super.setY(super.getY() - 16);
-            }
-            else {
-                gv.setTopReached(true); // the top was reached, now just fall.
-                // 6 is an arbitrary # to ensure jump height is lower (bigger #) than current Y.
-                gv.setJumpHeight(super.getY() + 8);
-            }
+        if (super.getY() > gv.getJumpHeight() && gv.getJumpCount() < 2)
+        {
+            super.setY(super.getY() - (gv.getJumpYPos() * 2));
+        }
+        else {
+            gv.setTopReached(true); // the top was reached, now just fall.
+            // 8 is an arbitrary # to ensure jump height is lower (bigger #) than current Y.
+            gv.setJumpHeight(super.getY() + 8);
+        }
     }
     public boolean checkCollision(Sprite sp){
         if(super.getX()+super.getWidth()>=sp.getX() && super.getY()+super.getHeight()>=sp.getY() && super.getY()<=sp.getY()+sp.getHeight()){
@@ -71,7 +74,5 @@ public class Entity extends Sprite {
 
         return true;//is falling
     }
-
-
 
 }
