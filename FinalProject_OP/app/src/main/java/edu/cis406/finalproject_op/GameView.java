@@ -1,6 +1,7 @@
 package edu.cis406.finalproject_op;
 
 import android.content.Context;
+import android.media.MediaPlayer;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.util.Log;
@@ -32,6 +33,7 @@ public class GameView extends GLSurfaceView implements GLSurfaceView.Renderer {
     long spriteTime = System.nanoTime();
     long gameTime = System.currentTimeMillis();
     int frames;
+    MediaPlayer   song;
     public GameView(Context context) {
         super(context);
         setEGLContextClientVersion(1);
@@ -41,13 +43,19 @@ public class GameView extends GLSurfaceView implements GLSurfaceView.Renderer {
         jumptoheight = 0;
         jumpcount = 2; // start game with player NOT already jumping.
         frames = 0;
-        movementSpeed = 175;
+        movementSpeed = 300;
         jumpSpeed = 250;
         // Start the character NOT moving because time has not yet
         // been used to calculate speed (yet).
         moveDistance = ((System.currentTimeMillis() - gameTime) / 1000.0) * movementSpeed;
         jumpDistance = ((System.currentTimeMillis() - gameTime) / 1000.0) * jumpSpeed;
         passedTime = 0;
+
+        //music
+        MediaPlayer curSound;
+       song = MediaPlayer.create(this.getContext(), R.raw.song);
+        song.setLooping(true);
+       song.start();
 }
 
     @Override
@@ -64,7 +72,7 @@ public class GameView extends GLSurfaceView implements GLSurfaceView.Renderer {
         //load shit here
 
         map = new Map(this.getContext(),new SpriteSheet(this.getContext(),R.mipmap.sp3,12,10,gl),R.raw.map2);
-        sprite = new Entity(new SpriteSheet(this.getContext(),R.mipmap.bad1,4,3,gl),this,map.getStartX()+3000,map.getMaxY()-512);
+        sprite = new Entity(new SpriteSheet(this.getContext(),R.mipmap.unicorn,4,9,gl),this,map.getStartX()+3000,map.getMaxY()-512);
         txt= new TextRenderer(this.getContext(),gl,"1",10,10);
     }
 
@@ -92,7 +100,7 @@ public class GameView extends GLSurfaceView implements GLSurfaceView.Renderer {
       //  gl.glLoadIdentity();
         frames++;
 
-        if(System.nanoTime() - spriteTime >= 110000000) // 1000000000
+        if(System.nanoTime() - spriteTime >= 1100000) // 1000000000
         {
            if (sprite.checkCollisionFalling())
            {
@@ -100,17 +108,15 @@ public class GameView extends GLSurfaceView implements GLSurfaceView.Renderer {
            }
             else
            {
-            switch (sprite.getSpriteX())
-            {
-                case 0: sprite.setSpriteX(1);
-                    break;
-                case 1: sprite.setSpriteX(2);
-                    break;
-                case 2: sprite.setSpriteX(0);
-                    break;
-                default: sprite.setSpriteX(0);
-                    break;
-            }
+               sprite.setSpriteX(sprite.getSpriteX()-1);
+               if(sprite.getSpriteX()<0){
+                   sprite.setSpriteY(sprite.getSpriteY()-1);
+                   if(sprite.getSpriteY()<0) {
+                       sprite.setSpriteY(2);
+
+                   }
+                   sprite.setSpriteX(8);
+               }
            }
             spriteTime = System.nanoTime();
         }
