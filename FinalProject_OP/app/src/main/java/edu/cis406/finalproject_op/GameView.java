@@ -14,7 +14,7 @@ import javax.microedition.khronos.opengles.GL10;
  * Created by geforce on 11/24/2015.
  */
 public class GameView extends GLSurfaceView implements GLSurfaceView.Renderer {
-    private  Entity sprite;
+    private  Player sprite;
     private Map map;
     private Camera camera;
     private int Score;
@@ -33,7 +33,10 @@ public class GameView extends GLSurfaceView implements GLSurfaceView.Renderer {
     long spriteTime = System.nanoTime();
     long gameTime = System.currentTimeMillis();
     int frames;
-    MediaPlayer   song;
+
+
+    float touchStartX,touchStartY;
+
     public GameView(Context context) {
         super(context);
         setEGLContextClientVersion(1);
@@ -52,10 +55,11 @@ public class GameView extends GLSurfaceView implements GLSurfaceView.Renderer {
         passedTime = 0;
 
         //music
+        /*
         MediaPlayer curSound;
        song = MediaPlayer.create(this.getContext(), R.raw.song);
         song.setLooping(true);
-       song.start();
+       song.start();*/
 }
 
     @Override
@@ -64,7 +68,8 @@ public class GameView extends GLSurfaceView implements GLSurfaceView.Renderer {
         gl.glEnable(GL10.GL_TEXTURE_2D);
         gl.glEnable(GL10.GL_ALPHA_TEST);
         gl.glAlphaFunc(GL10.GL_GREATER, 0.01f);
-        //gl.glEnable(GL10.GL_BLEND);
+        gl.glEnable(GL10.GL_BLEND);
+        gl.glBlendFunc(GL10.GL_ONE, GL10.GL_ONE_MINUS_SRC_ALPHA);
         gl.glMatrixMode(GL10.GL_PROJECTION);
         gl.glLoadIdentity();
         gl.glClearDepthf(1.f);
@@ -72,7 +77,9 @@ public class GameView extends GLSurfaceView implements GLSurfaceView.Renderer {
         //load shit here
 
         map = new Map(this.getContext(),new SpriteSheet(this.getContext(),R.mipmap.sp3,12,10,gl),R.raw.map2);
-        sprite = new Entity(new SpriteSheet(this.getContext(),R.mipmap.unicorn,4,9,gl),this,map.getStartX()+3000,map.getMaxY()-512);
+        sprite = new Player(new SpriteSheet(this.getContext(),R.mipmap.unicorn,4,9,gl),
+                new SpriteSheet(this.getContext(),R.mipmap.unicornburst,4,4,gl),
+                this,map.getStartX()+3000,map.getMaxY()-512);
         txt= new TextRenderer(this.getContext(),gl,"1",10,10);
     }
 
@@ -83,6 +90,8 @@ public class GameView extends GLSurfaceView implements GLSurfaceView.Renderer {
         gl.glEnable(GL10.GL_TEXTURE_2D);
         gl.glEnable(GL10.GL_ALPHA_TEST);
         gl.glMatrixMode(GL10.GL_PROJECTION);
+        gl.glEnable(GL10.GL_BLEND);
+        gl.glBlendFunc(GL10.GL_ONE, GL10.GL_ONE_MINUS_SRC_ALPHA);
         gl.glLoadIdentity();
         gl.glOrthof(0.f, width, height, -1.0f, 0.0f, 1.0f);
         camera= new Camera(0,map.getMaxY()-height,width,height);
@@ -100,26 +109,6 @@ public class GameView extends GLSurfaceView implements GLSurfaceView.Renderer {
       //  gl.glLoadIdentity();
         frames++;
 
-        if(System.nanoTime() - spriteTime >= 1100000) // 1000000000
-        {
-           if (sprite.checkCollisionFalling())
-           {
-               sprite.setSpriteX(1);
-           }
-            else
-           {
-               sprite.setSpriteX(sprite.getSpriteX()-1);
-               if(sprite.getSpriteX()<0){
-                   sprite.setSpriteY(sprite.getSpriteY()-1);
-                   if(sprite.getSpriteY()<0) {
-                       sprite.setSpriteY(2);
-
-                   }
-                   sprite.setSpriteX(8);
-               }
-           }
-            spriteTime = System.nanoTime();
-        }
 
         if(System.nanoTime() - startTime >= 1000000000) {
             txt.setText("FPS:"+String.valueOf(frames));
@@ -134,7 +123,8 @@ public class GameView extends GLSurfaceView implements GLSurfaceView.Renderer {
         moveDistance = (passedTime / 1000.0) * movementSpeed;
         jumpDistance = (passedTime / 1000.0) * jumpSpeed;
         if(jumpDistance > 30){jumpDistance = 30;} // the bigger distance is, the more it lags.
-        if(moveDistance > 15){moveDistance = 15;}
+        if (moveDistance > 15) {
+            moveDistance = 15;}
         camera.setX(camera.getX() + (int) moveDistance);
         gameTime = System.currentTimeMillis();
         //Log.d("Jump Distance: ", Double.toString(jumpDistance));
@@ -147,19 +137,26 @@ public class GameView extends GLSurfaceView implements GLSurfaceView.Renderer {
         switch(e.getAction())
         {
             case MotionEvent.ACTION_DOWN:
-                if (jumpcount < 2)
-                {
-                    jumptoheight = sprite.getY() - 165.0f;
-                    topReached = false;
-                    jumpcount++;
-                    //sprite.setY(sprite.getY() - 275.0f);
-                }
+                touchStartX = e.getX();
+                touchStartY=e.getY();
                 break;
             case MotionEvent.ACTION_MOVE:
                 //** CODE **
                 break;
             case MotionEvent.ACTION_UP:
                 //** CODE **
+                if(e.getX()>touchStartX+100){
+                    sprite.Dash();
+                    Log.d("Swupte","DASHING");
+
+                }else {
+                    if (jumpcount < 2 && !sprite.isDashing()) {
+                        jumptoheight = sprite.getY() - 165.0f;
+                        topReached = false;
+                        jumpcount++;
+                        //sprite.setY(sprite.getY() - 275.0f);
+                    }
+                }
                 break;
         }
         return true;
@@ -203,6 +200,12 @@ public class GameView extends GLSurfaceView implements GLSurfaceView.Renderer {
     public int getCameraXPos()
     {
         return (int)moveDistance;
+    }
+    public int getMovementSpeed(){
+        return movementSpeed;
+    }
+    public void setMovementSpeed(int speed){
+        movementSpeed=speed;
     }
 
     public int getJumpYPos()
